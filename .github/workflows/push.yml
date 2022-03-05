@@ -1,8 +1,6 @@
 name: Pulumi up on push
-on:
-  push:
-    branches:
-      - main
+on: push
+   
 jobs:
   preview:
     name: Update
@@ -22,6 +20,6 @@ jobs:
       - uses: pulumi/actions@v3
         with:
           command: up
-          stack-name: dev
+          stack-name: "${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}"
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
