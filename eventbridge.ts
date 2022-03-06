@@ -5,7 +5,7 @@ import { bucketName } from "./s3";
 let config = new pulumi.Config();
 let prefix = config.require("prefix");
 
-const log = new aws.cloudwatch.LogGroup(`${prefix}-s3-upload-events-log`, {
+const log = new aws.cloudwatch.LogGroup(`/aws/events/${prefix}-s3-upload-events-log`, {
     retentionInDays: 7
 });
 
