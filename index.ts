@@ -11,6 +11,10 @@ let url = config.require("presignerFunctionUrl");
 
 // Create an AWS resource (S3 Bucket)
 const bucket = new aws.s3.Bucket(`${prefix}-uploads`);
+const bucketNotification = new aws.s3.BucketNotification("bucketNotification", {
+    bucket: bucket.id,
+    eventbridge: true
+});
 
 // Configure IAM so that the AWS Lambda can be run.
 const role = new aws.iam.Role(`${prefix}-functionRole`, {
