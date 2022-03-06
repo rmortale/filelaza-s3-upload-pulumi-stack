@@ -1,3 +1,4 @@
 config:
   aws:region: eu-west-1
+  s3-upload-pulumi:prefix: filelaza-s3-upload-pulumi-prod
   s3-upload-pulumi:presignerFunctionUrl: https://gitlab.com/api/v4/projects/34242653/packages/maven/ch/dulce/filelaza/s3-presigner/1.0/s3-presigner-1.0.jar

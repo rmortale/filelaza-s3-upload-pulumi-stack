@@ -1,20 +1,13 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as aws from "@pulumi/aws";
 import * as awsx from "@pulumi/awsx";
+import { bucketName } from "./s3";
 
-const env = pulumi.getStack();
-const prj = "filelaza";
-const puprj = pulumi.getProject();
-const prefix = `${prj}-${puprj}-${env}`;
 let config = new pulumi.Config();
 let url = config.require("presignerFunctionUrl");
+let prefix = config.require("prefix");
 
-// Create an AWS resource (S3 Bucket)
-const bucket = new aws.s3.Bucket(`${prefix}-uploads`);
-const bucketNotification = new aws.s3.BucketNotification("bucketNotification", {
-    bucket: bucket.id,
-    eventbridge: true
-});
+
 
 // Configure IAM so that the AWS Lambda can be run.
 const role = new aws.iam.Role(`${prefix}-functionRole`, {
@@ -41,7 +34,7 @@ const presignerFunction = new aws.lambda.Function(`${prefix}-presigner-function`
     handler: "ch.dulce.filelaza.presigner.App::handleRequest",
     environment: {
         variables: {
-            BUCKET_NAME: bucket.id,
+            BUCKET_NAME: bucketName,
             URL_EXPIRATION_SECONDS: "300"
         },
     },
@@ -62,4 +55,4 @@ const apigw = new aws.apigatewayv2.Api(`${prefix}-httpApiGateway`, {
 });
 
 export const endpoint = apigw.apiEndpoint;
-export const bucketName = bucket.id;
+
