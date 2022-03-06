@@ -1,6 +1,7 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as aws from "@pulumi/aws";
 import { presignerFunction } from "./lambda";
+import { logGroup } from "./eventbridge";
 
 let config = new pulumi.Config();
 let prefix = config.require("prefix");
@@ -21,4 +22,4 @@ const apigw = new aws.apigatewayv2.Api(`${prefix}-httpApiGateway`, {
 });
 
 export const endpoint = apigw.apiEndpoint;
-
+export const log = logGroup;
