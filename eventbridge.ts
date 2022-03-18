@@ -1,6 +1,6 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as aws from "@pulumi/aws";
-import { bucketName } from "./s3";
+import { s3bucketName, sqsbucketName } from "./s3";
 
 let config = new pulumi.Config();
 let prefix = config.require("prefix");
@@ -9,9 +9,9 @@ const log = new aws.cloudwatch.LogGroup(`/aws/events/${prefix}-s3-upload-events-
     retentionInDays: 7
 });
 
-const objCreated = new aws.cloudwatch.EventRule(`${prefix}-s3ObjectCreated`, {
+const s3objCreated = new aws.cloudwatch.EventRule(`${prefix}-s3ObjectCreated`, {
     description: "Capture each S3 object created event",
-    eventPattern: bucketName.apply(name =>
+    eventPattern: s3bucketName.apply(name =>
         JSON.stringify({
             "source": ["aws.s3"],
             "detail-type": ["Object Created"],
@@ -24,8 +24,29 @@ const objCreated = new aws.cloudwatch.EventRule(`${prefix}-s3ObjectCreated`, {
     )
 });
 
-const eventTarget = new aws.cloudwatch.EventTarget(`${prefix}-event-target`, {
-    rule: objCreated.name,
+const sqsobjCreated = new aws.cloudwatch.EventRule(`${prefix}-sqsbjectCreated`, {
+    description: "Capture each S3 object created event",
+    eventPattern: sqsbucketName.apply(name =>
+        JSON.stringify({
+            "source": ["aws.s3"],
+            "detail-type": ["Object Created"],
+            "detail": {
+                "bucket": {
+                    "name": [name]
+                }
+            }
+        })
+    )
+});
+
+const s3eventTarget = new aws.cloudwatch.EventTarget(`${prefix}-s3-event-target`, {
+    rule: s3objCreated.name,
+    targetId: "SendToLog",
+    arn: log.arn,
+});
+
+const eventTarget = new aws.cloudwatch.EventTarget(`${prefix}-sqs-event-target`, {
+    rule: sqsobjCreated.name,
     targetId: "SendToLog",
     arn: log.arn,
 });

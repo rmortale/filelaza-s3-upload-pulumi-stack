@@ -5,11 +5,17 @@ import * as awsx from "@pulumi/awsx";
 let config = new pulumi.Config();
 let prefix = config.require("prefix");
 
-// Create an AWS resource (S3 Bucket)
-const bucket = new aws.s3.Bucket(`${prefix}-uploads`);
-const bucketNotification = new aws.s3.BucketNotification("bucketNotification", {
-    bucket: bucket.id,
+const s3bucket = new aws.s3.Bucket(`${prefix}-s3AdapterBucket`);
+const s3bucketNotification = new aws.s3.BucketNotification(`${prefix}-s3AdapterNotification`, {
+    bucket: s3bucket.id,
     eventbridge: true
 });
 
-export const bucketName = bucket.id;
+const sqsbucket = new aws.s3.Bucket(`${prefix}-sqsAdapterBucket`);
+const sqsbucketNotification = new aws.s3.BucketNotification(`${prefix}-sqsAdapterNotification`, {
+    bucket: sqsbucket.id,
+    eventbridge: true
+});
+
+export const s3bucketName = s3bucket.id;
+export const sqsbucketName = sqsbucket.id;
