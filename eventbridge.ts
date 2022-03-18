@@ -41,13 +41,13 @@ const sqsobjCreated = new aws.cloudwatch.EventRule(`${prefix}-sqsbjectCreated`, 
 
 const s3eventTarget = new aws.cloudwatch.EventTarget(`${prefix}-s3-event-target`, {
     rule: s3objCreated.name,
-    targetId: "SendToLog",
+    targetId: "SendToLogS3",
     arn: log.arn,
 });
 
 const eventTarget = new aws.cloudwatch.EventTarget(`${prefix}-sqs-event-target`, {
     rule: sqsobjCreated.name,
-    targetId: "SendToLog",
+    targetId: "SendToLogSqs",
     arn: log.arn,
 });
 
