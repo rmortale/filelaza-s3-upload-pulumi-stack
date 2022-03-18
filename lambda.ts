@@ -5,6 +5,8 @@ import { bucketName } from "./s3";
 
 let config = new pulumi.Config();
 let url = config.require("presignerFunctionUrl");
+let bucket = config.require("presignerFunctionBucket");
+let key = config.require("presignerFunctionKey");
 let prefix = config.require("prefix");
 
 
@@ -25,12 +27,15 @@ new aws.iam.RolePolicyAttachment(`${prefix}-funcS3RoleAttach`, {
 
 // Next, create the Lambda function itself:
 const lambda = new aws.lambda.Function(`${prefix}-presigner-function`, {
-    code: new pulumi.asset.RemoteArchive(url),
+    //code: new pulumi.asset.RemoteArchive(url),
+    s3Bucket: bucket,
+    s3Key: key,
     runtime: aws.lambda.Java11Runtime,
-    memorySize: 256,
+    architectures: ["arm64"],
+    memorySize: 512,
     timeout: 10,
     role: role.arn,
-    handler: "ch.dulce.filelaza.presigner.App::handleRequest",
+    handler: "io.quarkus.amazon.lambda.runtime.QuarkusStreamHandler::handleRequest",
     environment: {
         variables: {
             BUCKET_NAME: bucketName,
