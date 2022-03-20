@@ -5,7 +5,6 @@ import { s3bucketName, sqsbucketName } from "./s3";
 
 
 let config = new pulumi.Config();
-let url = config.require("presignerFunctionUrl");
 let bucket = config.require("presignerFunctionBucket");
 let key = config.require("presignerFunctionKey");
 let prefix = config.require("prefix");
