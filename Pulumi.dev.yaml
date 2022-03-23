@@ -3,4 +3,4 @@ config:
   pulumi:template: aws-typescript
   s3-upload-pulumi:prefix: filelaza-s3-upload-pulumi-dev
   s3-upload-pulumi:presignerFunctionBucket: filelaza-lambda-upload-bucket
-  s3-upload-pulumi:presignerFunctionKey: filelaza-s3-presigner-quarkus-lambda-aa91dde6.zip
+  s3-upload-pulumi:presignerFunctionKey: filelaza-s3-presigner-quarkus-lambda-fe66b6a1.zip
