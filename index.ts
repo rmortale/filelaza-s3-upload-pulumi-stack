@@ -1,7 +1,6 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as aws from "@pulumi/aws";
 import { presignerFunction } from "./lambda";
-import { logGroup } from "./eventbridge";
 import { s3bucketName, sqsbucketName } from "./s3";
 
 let config = new pulumi.Config();
@@ -23,7 +22,6 @@ const apigw = new aws.apigatewayv2.Api(`${prefix}-httpApiGateway`, {
 });
 
 export const endpoint = apigw.apiEndpoint;
-export const log = logGroup;
 export const s3bucket = s3bucketName;
 export const sqsbucket = sqsbucketName;
 
